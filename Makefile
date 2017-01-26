@@ -1,4 +1,4 @@
-FOLDER=poneyserver
+FOLDERS=poneyserver
 .PHONY: all $(FOLDERS)
 all: $(FOLDERS)
 poneyserver:
