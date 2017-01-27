@@ -9,6 +9,10 @@ int main(int argc, char **argv)
 	int socket_serveur;
 	int socket_client;
 	socket_serveur = creer_serveur(8080);
+	if(socket_serveur == -1){
+		perror("socket_serveur");
+		return -1;
+	} 
 	while(1){
 		socket_client = accept(socket_serveur, NULL, NULL);
 		if (socket_client == -1){
