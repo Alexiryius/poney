@@ -1,6 +1,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <errno.h>
+#include <stdio.h>
 #include "socket.h"
 
 int creer_serveur(int port){
