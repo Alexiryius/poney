@@ -1,0 +1,16 @@
+1. Quittez votre serveur ( Ctrl+C ) et relancez le. Que se passe-t-il ?
+	connexion impossible : bind socket_serveur: Address already in use
+	accept: Bad file descriptor
+
+2. Exécutez la commande suivante : nc -z 127.0.0.1 8080 . (message dans boucle infini) Que se passe-t-il ?
+	L'arrêt de la boucle du message arrête le serveur.
+
+3. Exécutez la commande suivante : telnet ::1 8080 . Que se passe-t-il ? Pourquoi ?
+	telnet ne se connecte pas : telnet: Unable to connect to remote host: Connection refused
+	parce que ::1 c'est une adresse ipv6
+
+4. Lancez deux clients simultanément. Que se passe-t-il ? Pourquoi ?
+	on peut pas : bind socket_serveur: Address already in use
+	socket_serveur: Address already in use
+	le port est déjà occupé
+
