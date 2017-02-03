@@ -7,7 +7,8 @@
 
 int creer_serveur(int port){
 	int socket_serveur;
-	//int socket_client;
+	int optval =1;
+	
 	struct sockaddr_in saddr;
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(port);
@@ -18,6 +19,9 @@ int creer_serveur(int port){
 		perror("socket_serveur");
 		return -1;
 	}
+	if (setsockopt(socket_serveur, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int)) ==-1){
+		perror("Can not set SO_REUSEADDR option");
+	} 
 	if (bind(socket_serveur, (struct sockaddr *) &saddr, sizeof(saddr)) ==-1){
 		perror("bind socket_serveur");
 		return -1;
@@ -27,12 +31,6 @@ int creer_serveur(int port){
 		return -1;
 	}
 
-	/*socket_client = accept(socket_serveur, NULL, NULL);
-	if (socket_client === -1){
-		perror("accept");
-	}
-	const char *message_bienvenue = "Bonjour, bienvenue sur mon serveur Bonjour, 		bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur \n";
-	write(socket_client, message_bienvenue, strlen(message_bienvenue));*/
 
 	return socket_serveur;
 }
