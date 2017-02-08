@@ -5,12 +5,35 @@
 #include "socket.h"
 #include <signal.h>
 #include <stdlib.h>
+#include <wait.h>
 
 //indique au gestionnaire de signaux qu'il doit ignorer le signal SIGPIPE pour que le serveur ne s'arrête pas même si le descripteur de socket est fermé
 void initialiser_signaux(void){
 	
 	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR){
 		perror("signal");
+	}
+	
+}
+
+//deux fonctions pour fais disparaitre le processus zombie
+void traitement_signal(int sig){
+	printf("Signal %d reçu\n", sig);
+	pid_t p;
+// test si il reste d'autre fils, pour nettoyertous les zombis, sil y en a plusieurs killé en même temps
+	while((p = waitpid(-1, NULL, WNOHANG))> 0)
+	{
+		printf("Fils %d nettoyé\n", p);
+	}
+}
+
+void daryl_signal(void){
+	struct sigaction sa;
+	sa.sa_handler = traitement_signal;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	if (sigaction(SIGCHLD, &sa, NULL)==-1){
+		perror("sigaction(SIGCHLD)");
 	}
 }
 
@@ -30,6 +53,7 @@ int main(int argc, char **argv)
 	} 
 	while(1){
 		socket_client = accept(socket_serveur, NULL, NULL);
+		daryl_signal();
 		if (socket_client == -1){
 			perror("accept");
 			return -1;
@@ -56,8 +80,7 @@ int main(int argc, char **argv)
 			close(socket_client);
 		}
 
-		
-		
+
 	}
 	
 	/* Arnold Robbins in the LJ of February '95, describing RCS */
