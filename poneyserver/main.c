@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 		}
 
 
-//crée une boucle d'envoi infini pour si on arrete la boucle constater que ca eteint le serveur si on utilise pas la fonction signal. Si on utilise signal ca ne doit pas l'arreter
+//crée une boucle d'envoi infini pour si on arrete la boucle constater que ca eteint le serveur si on utilise pas la fonction signal. Si on utilise signal ca ne doit pas l'arreter (avec la fonction initialiser_signaux())
 		while(1){
 			write(socket_client, message_bienvenue, strlen(message_bienvenue));
 		}
