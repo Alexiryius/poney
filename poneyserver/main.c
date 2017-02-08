@@ -33,21 +33,30 @@ int main(int argc, char **argv)
 			perror("accept");
 			return -1;
 		}
-
-
-//crée une boucle d'envoi infini pour si on arrete la boucle constater que ca eteint le serveur si on utilise pas la fonction signal. Si on utilise signal ca ne doit pas l'arreter (avec la fonction initialiser_signaux())
-		while(1){
-			write(socket_client, message_bienvenue, strlen(message_bienvenue));
+		pid_t fok = fork();
+		if(fok == -1){
+			//donc erreur
 		}
-		
-		
+		else if(fok == 0){
+			//on est fils
+
+
+			//crée une boucle d'envoi infini pour si on arrete la boucle constater que 				ca eteint le serveur si on utilise pas la fonction signal. Si on utilise 				signal ca ne doit pas l'arreter
+			while(1){
+				write(socket_client, message_bienvenue, strlen(message_bienvenue));
+			}
+		}
+		else{
+			//on est dans le papa 
+			close(socket_client);
+		}
+
 		/*while((nb = read(socket_client, buff, 256)) > 0){
 			write(socket_client, buff, nb);
 		}*/
 		
-		
 	}
-	close(socket_client);
+	
 	/* Arnold Robbins in the LJ of February '95, describing RCS */
 	if (argc > 1 && strcmp(argv[1], "-advice") == 0){
 		printf("Don't Panic !\n");
