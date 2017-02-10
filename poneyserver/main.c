@@ -21,9 +21,14 @@ void traitement_signal(int sig){
 	printf("Signal %d reçu\n", sig);
 	pid_t p;
 // test si il reste d'autre fils, pour nettoyertous les zombis, sil y en a plusieurs killé en même temps
-	while((p = waitpid(-1, NULL, WNOHANG))> 0)
+	int status;
+	while((p = waitpid(-1, &status, WNOHANG))> 0)
 	{
 		printf("Fils %d nettoyé\n", p);
+		if (WIFSIGNALED(status))
+		{
+			printf("Fils terminé par le signal %d\n", WTERMSIG(status));
+		}
 	}
 }
 
@@ -44,6 +49,7 @@ int main(int argc, char **argv)
 	char buff[256];
 	/*const char *message_bienvenue = "Bonjour, bienvenue sur mon serveur Bonjour, 		bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur \n";*/
 	FILE *fsc; //pour utiliser avec fgets, fprintf...
+	//FILE *fss;
 	
 
 	initialiser_signaux();
@@ -51,7 +57,8 @@ int main(int argc, char **argv)
 	if(socket_serveur == -1){
 		perror("socket_serveur");
 		return -1;
-	} 
+	}
+	//fss = fdopen(socket_serveur, "w+");
 	while(1){
 		socket_client = accept(socket_serveur, NULL, NULL);
 		fsc = fdopen(socket_client, "w+");
@@ -73,7 +80,7 @@ int main(int argc, char **argv)
 			}*/
 			
 			while(fgets(buff, 256, fsc)){
-				fprintf(fsc, buff);
+				fprintf(stdout, buff);
 			}
 			exit(0);
 		}
