@@ -16,7 +16,7 @@ void initialiser_signaux(void){
 	
 }
 
-//deux fonctions pour fais disparaitre le processus zombie
+//deux fonctions pour faire disparaitre le processus zombie
 void traitement_signal(int sig){
 	printf("Signal %d reçu\n", sig);
 	pid_t p;
@@ -41,9 +41,10 @@ int main(int argc, char **argv)
 {
 	int socket_serveur;
 	int socket_client;
-	int nb;
 	char buff[256];
-	const char *message_bienvenue = "Bonjour, bienvenue sur mon serveur Bonjour, 		bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur \n";
+	/*const char *message_bienvenue = "Bonjour, bienvenue sur mon serveur Bonjour, 		bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur \n";*/
+	FILE *fsc; //pour utiliser avec fgets, fprintf...
+	
 
 	initialiser_signaux();
 	socket_serveur = creer_serveur(8080);
@@ -53,6 +54,7 @@ int main(int argc, char **argv)
 	} 
 	while(1){
 		socket_client = accept(socket_serveur, NULL, NULL);
+		fsc = fdopen(socket_client, "w+");
 		daryl_signal();
 		if (socket_client == -1){
 			perror("accept");
@@ -67,11 +69,11 @@ int main(int argc, char **argv)
 
 			//crée une boucle d'envoi infini pour si on arrete la boucle constater que 				ca eteint le serveur si on utilise pas la fonction signal. Si on utilise 				signal ca ne doit pas l'arreter
 			/*while(1){
-				
+				write(socket_client, message_bienvenue, strlen(message_bienvenue));
 			}*/
-			write(socket_client, message_bienvenue, strlen(message_bienvenue));
-			while((nb = read(socket_client, buff, 256)) > 0){
-				write(socket_client, buff, nb);
+			
+			while(fgets(buff, 256, fsc)){
+				fprintf(fsc, buff);
 			}
 			exit(0);
 		}
@@ -91,3 +93,6 @@ int main(int argc, char **argv)
 	printf("Need an advice?\n");
 	return 0;
 }
+
+//char *fgets(char *s, int size, FILE *stream)
+//char *fprintf(FILE *stream, const char *format,...) 
