@@ -1,3 +1,5 @@
+https://github.com/Alexiryius/poney
+
 1. Quittez votre serveur ( Ctrl+C ) et relancez le. Que se passe-t-il ?
 	connexion impossible : bind socket_serveur: Address already in use
 	accept: Bad file descriptor
@@ -6,11 +8,10 @@
 	L'arrêt de la boucle du message arrête le serveur.
 
 3. Exécutez la commande suivante : telnet ::1 8080 . Que se passe-t-il ? Pourquoi ?
-	telnet ne se connecte pas : telnet: Unable to connect to remote host: Connection refused
-	parce que ::1 c'est une adresse ipv6
+	telnet ne se connecte pas : telnet: Unable to connect to remote host: Connection refused.
+	Parce que ::1 c'est une adresse ipv6 et notre programme utilise ipv4.
 
 4. Lancez deux clients simultanément. Que se passe-t-il ? Pourquoi ?
-	on peut pas : bind socket_serveur: Address already in use
-	socket_serveur: Address already in use
-	le port est déjà occupé
+	Le second client est en attente et recoit une réponse quand le premier se déconnecte.
+	Le serveur n'accepte qu'une connexion à la fois : le accept et le read sont bloquants.
 
