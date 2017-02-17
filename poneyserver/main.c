@@ -47,18 +47,16 @@ int main(int argc, char **argv)
 	int socket_serveur;
 	int socket_client;
 	char buff[256];
-	/*const char *message_bienvenue = "Bonjour, bienvenue sur mon serveur Bonjour, 		bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur Bonjour, bienvenue sur mon serveur \n";*/
-	FILE *fsc; //pour utiliser avec fgets, fprintf...
-	//FILE *fss;
-	
 
+	FILE *fsc; //pour utiliser avec fgets, fprintf...
+
+	
 	initialiser_signaux();
 	socket_serveur = creer_serveur(8080);
 	if(socket_serveur == -1){
 		perror("socket_serveur");
 		return -1;
 	}
-	//fss = fdopen(socket_serveur, "w+");
 	while(1){
 		socket_client = accept(socket_serveur, NULL, NULL);
 		fsc = fdopen(socket_client, "w+");
@@ -69,16 +67,12 @@ int main(int argc, char **argv)
 		}
 		pid_t fok = fork();
 		if(fok == -1){
-			//donc erreur
+			perror("erreur de fork");
+			return -1;
 		}
 		else if(fok == 0){
 			//on est fils
 
-			//crée une boucle d'envoi infini pour si on arrete la boucle constater que 				ca eteint le serveur si on utilise pas la fonction signal. Si on utilise 				signal ca ne doit pas l'arreter
-			/*while(1){
-				write(socket_client, message_bienvenue, strlen(message_bienvenue));
-			}*/
-			
 			while(fgets(buff, 256, fsc)){
 				fprintf(stdout, "%s", buff);
 			}
@@ -92,7 +86,6 @@ int main(int argc, char **argv)
 
 	}
 	
-	/* Arnold Robbins in the LJ of February '95, describing RCS */
 	if (argc > 1 && strcmp(argv[1], "-advice") == 0){
 		printf("Don't Panic !\n");
 		return 42;
