@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 			}*/
 			
 			while(fgets(buff, 256, fsc)){
-				fprintf(stdout, buff);
+				fprintf(stdout, "%s", buff);
 			}
 			exit(0);
 		}
