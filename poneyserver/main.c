@@ -42,11 +42,27 @@ void daryl_signal(void){
 	}
 }
 
+char* recupLigne(char* buf){
+	char* retour = malloc(100);
+	//char* r_realloc;
+	int compt =0 ;
+	while(buf[compt] != '\r' && buf[compt+1]!= '\n'){
+		retour[compt] = buf[compt];
+		compt++;
+	}
+	return retour;
+}
+
+//faire un strstok
+
+
 int main(int argc, char **argv)
 {
 	int socket_serveur;
 	int socket_client;
 	char buff[256];
+	int i = 0;
+	char ligneHein[300];
 
 	FILE *fsc; //pour utiliser avec fgets, fprintf...
 
@@ -61,25 +77,34 @@ int main(int argc, char **argv)
 		socket_client = accept(socket_serveur, NULL, NULL);
 		fsc = fdopen(socket_client, "w+");
 		daryl_signal();
+
 		if (socket_client == -1){
 			perror("accept");
 			return -1;
 		}
+
 		pid_t fok = fork();
+
 		if(fok == -1){
 			perror("erreur de fork");
 			return -1;
 		}
+
 		else if(fok == 0){
-			//on est fils
+		//on est fils
+		fgets(buff, 256, fsc);
+		
 
 			while(fgets(buff, 256, fsc)){
+				if(strncmp(buff,"\r\n",2)){break;
+				}
 				fprintf(stdout, "%s", buff);
 			}
+			printf("ce qui est récupéré %s", ligneHein);
 			exit(0);
 		}
 		else{
-			//on est dans le papa 
+			//on est dans le papa
 			close(socket_client);
 		}
 
